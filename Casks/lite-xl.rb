@@ -12,12 +12,29 @@ cask "lite-xl" do
     strategy :github_latest
   end
 
-  # Upstream ships unsigned/un-notarized builds, so Gatekeeper blocks a normal
-  # launch. Install with `--no-quarantine` to skip the quarantine attribute.
+  # Upstream ships unsigned/un-notarized builds, so Gatekeeper blocks the first
+  # launch. The postflight below strips the quarantine attribute.
   depends_on macos: :big_sur
 
   app "Lite XL.app"
-  binary "#{appdir}/Lite XL.app/Contents/MacOS/lite-xl"
+  # The binary resolves its data dir relative to its own path, so a plain
+  # symlink into HOMEBREW_PREFIX/bin makes it look for core/start.lua there.
+  # Link a wrapper that execs the real binary inside the bundle instead.
+  shimscript = "#{staged_path}/lite-xl.wrapper.sh"
+  binary shimscript, target: "lite-xl"
+
+  preflight do
+    File.write shimscript, <<~EOS
+      #!/bin/bash
+      exec '#{appdir}/Lite XL.app/Contents/MacOS/lite-xl' "$@"
+    EOS
+  end
+
+  postflight do
+    system_command "/usr/bin/xattr",
+                   args: ["-dr", "com.apple.quarantine", "#{appdir}/Lite XL.app"],
+                   sudo: false
+  end
 
   zap trash: [
     "~/.config/lite-xl",
