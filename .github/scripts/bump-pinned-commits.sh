@@ -37,6 +37,7 @@ for file in "$tap_dir"/Formula/*.rb; do
     echo "$name: livecheck failed: $(jq -r '.[0].messages // .[0].error | tostring' <<<"$check")" >&2
     exit 1
   fi
+  echo "$name: $(jq -c '.[0].version' <<<"$check")" >&2
   [[ "$(jq -r '.[0].version.outdated' <<<"$check")" == "true" ]] || continue
 
   read -r commit date < <(gh api "repos/$repo/commits/$branch" --jq '.sha + " " + .commit.committer.date')

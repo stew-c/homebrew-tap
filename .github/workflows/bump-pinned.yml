@@ -58,9 +58,11 @@ jobs:
 
       # No token here: setup-homebrew already configured git auth with it, and
       # a second Authorization header makes GitHub reject every push.
+      # setup-homebrew always names the local branch main, whichever ref ran.
       - name: Push commits
         if: steps.bump.outputs.bumped == 'true'
         uses: Homebrew/actions/git-try-push@eb02c69dbabdb66ff183c614f4ce7ab3c077592c # 2026.10.12.1
         with:
           directory: ${{ steps.set-up-homebrew.outputs.repository-path }}
-          branch: ${{ github.ref_name }}
+          branch: main
+          remote_branch: ${{ github.ref_name }}
