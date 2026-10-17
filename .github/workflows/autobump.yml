@@ -38,4 +38,16 @@ jobs:
           HOMEBREW_GIT_COMMITTER_NAME: ${{ steps.git_setup.outputs.name }}
           HOMEBREW_GIT_COMMITTER_EMAIL: ${{ steps.git_setup.outputs.email }}
           TAP_NAME: ${{ steps.set-up-homebrew.outputs.tap-name }}
-        run: brew bump --no-fork --open-pr --formulae --bump-synced --tap="$TAP_NAME"
+          TAP_PATH: ${{ steps.set-up-homebrew.outputs.repository-path }}
+        # Formulae pinned to a commit can't be bumped by version; bump-pinned.yml
+        # handles those, so only pass the rest to brew bump.
+        run: |
+          pinned="$("$TAP_PATH/.github/scripts/bump-pinned-commits.sh" "$TAP_NAME" --list)"
+          formulae=()
+          for file in "$TAP_PATH"/Formula/*.rb; do
+            name="$(basename "$file" .rb)"
+            grep -qxF "$name" <<<"$pinned" || formulae+=("$TAP_NAME/$name")
+          done
+          if (( ${#formulae[@]} )); then
+            brew bump --no-fork --open-pr --formulae "${formulae[@]}"
+          fi
