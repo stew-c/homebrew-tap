@@ -4,12 +4,6 @@
 name: bump pinned commits
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - .github/workflows/bump-pinned.yml
-      - .github/scripts/bump-pinned-commits.sh
   schedule:
     # Every day at 2:15 UTC
     - cron: 15 2 * * *

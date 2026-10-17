@@ -2,14 +2,10 @@
 name: brew bump
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - .github/workflows/autobump.yml
   schedule:
     # Every day at 1:45 UTC
     - cron: 45 1 * * *
+  workflow_dispatch:
 
 permissions: {}
 
