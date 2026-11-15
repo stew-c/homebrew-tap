@@ -3,9 +3,9 @@ class Drawterm < Formula
   homepage "https://drawterm.9front.org/"
   # Upstream (git.9front.org) has no release tags or tarballs, so pin a commit
   # from the GitHub mirror and version it by commit date.
-  url "https://github.com/9front/drawterm/archive/be39bbaa88fda83bf75be642d093b20956297c8c.tar.gz"
-  version "2026.11.01"
-  sha256 "6731f53d8aeca2a75ebd9b5a990725b9c9c47fc53e8aa5b8b1b2056f04725b77"
+  url "https://github.com/9front/drawterm/archive/cf6a88fe6a256acc097245810f8d3b8a9f9ab977.tar.gz"
+  version "2026.11.14"
+  sha256 "0b9365376b27cb23975e981f7e997ab39974afdf3e9285f7806d6b8ca24fcb1a"
   license "MIT"
   head "https://github.com/9front/drawterm.git", branch: "front"
 
